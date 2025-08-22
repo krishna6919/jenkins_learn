@@ -1,3 +1,12 @@
-pytest>=7.0.0
-pytest-cov>=4.0.0
 flake8>=6.0.0
+pytest
+pytest-cov
+pytest-html
+pytest-logger
+pytest-xdist
+pytest-mock
+pytest-rerunfailures
+pytest-json-report
+pytest-timeout
+pytest-asyncio
+
