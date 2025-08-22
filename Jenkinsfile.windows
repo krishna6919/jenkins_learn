@@ -1,0 +1,30 @@
+pipeline {
+  agent any
+  options { timestamps() }
+  stages {
+    stage('Checkout') {
+      steps { checkout scm }
+    }
+    stage('Set up venv & deps (Windows)') {
+      steps {
+        bat 'py -3 -m venv .venv'
+        bat '.venv\\Scripts\\python -m pip install --upgrade pip'
+        bat '.venv\\Scripts\\pip install -r requirements.txt -r requirements-dev.txt'
+      }
+    }
+    stage('Lint') {
+      steps { bat '.venv\\Scripts\\flake8 .' }
+    }
+    stage('Test') {
+      steps {
+        bat '.venv\\Scripts\\pytest -q --junitxml=test-results\\junit.xml --cov=.'
+      }
+    }
+  }
+  post {
+    always {
+      junit 'test-results/*.xml'
+      archiveArtifacts artifacts: 'dist/*', fingerprint: true, allowEmptyArchive: true
+    }
+  }
+}
